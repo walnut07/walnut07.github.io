@@ -13,11 +13,12 @@
       // Delay for 5 seconds
       await new Promise(resolve => setTimeout(resolve, 5000));
 
-      // Trigger JavaScript eviction by requesting camera access
+      // Trigger JavaScript eviction byusing MediaDevicesAPI
       try {
-        const stream = await window.alert("Hello");
+          const stream = await navigator.mediaDevices.enumerateDevices();
+          console.log(stream);
       } catch (error) {
-        console.error("Error accessing camera:", error);
+          console.error("Error enumerating devices:", error);
       }
 
       // Check for BFCache eviction reason
