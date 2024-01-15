@@ -1,39 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>BFCache JavaScript Eviction Test (Delayed)</title>
+<title>JavaScript After Navigation (Web Worker)</title>
 </head>
 <body>
-  <h1>BFCache JavaScript Eviction Test</h1>
-  <button id="triggerEviction">Trigger Eviction (5 Second Delay)</button>
-  <p id="result">Click the button to trigger JavaScript eviction.</p>
-
+  <p>This page will execute a script 5 seconds after navigation using a web worker.</p>
   <script>
-    document.getElementById("triggerEviction").addEventListener("click", async function() {
-      // Delay for 5 seconds
-      await new Promise(resolve => setTimeout(resolve, 5000));
-
-      // Trigger JavaScript eviction byusing MediaDevicesAPI
-      try {
-          const stream = await navigator.mediaDevices.enumerateDevices();
-          console.log(stream);
-      } catch (error) {
-          console.error("Error enumerating devices:", error);
-      }
-
-      // Check for BFCache eviction reason
-      if (window.performance.navigation.notRestoredReasons) {
-        const reasons = window.performance.navigation.notRestoredReasons.reasons;
-        console.log(reasons);
-        if (reasons.includes('JavaScriptEviction')) {
-          document.getElementById("result").textContent = "Page was evicted from BFCache due to JavaScript eviction!";
-        } else {
-          document.getElementById("result").textContent = "JavaScript eviction triggered, but not sure if BFCache eviction occurred.";
-        }
-      } else {
-        document.getElementById("result").textContent = "JavaScript eviction triggered, but browser doesn't support NotRestoredReasons API.";
-      }
-    });
+    const worker = new Worker('worker.js');
+    worker.postMessage('runScript');
   </script>
 </body>
 </html>
